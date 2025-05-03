@@ -52,6 +52,11 @@ while run:
     if scene == "menu":
         window.blit(menu_background, (0, 0))
         start_button.draw(window)
+         x,y = mouse.get_pos()
+        if start_button.rect.collidepoint(x,y):
+            start_button.image = pygame.transform.scale(pygame.image.load(), (w, h))
+        else:
+            start_button.image = pygame.transform.scale(pygame.image.load(), (w, h))
     elif scene == "game":
         window.blit(game_background, (0, 0))
         text = font1.render("Тут буде гра!", True, WHITE)
