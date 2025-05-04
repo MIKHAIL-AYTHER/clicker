@@ -34,8 +34,16 @@ class Button:
     def is_clicked(self, pos):
         return self.rect.collidepoint(pos)
 
+class Game:
+    def start(self):
+        window.blit(game_background, (0, 0))
+        text = font1.render("Тут буде гра!", True, WHITE)
+        window.blit(text, (250, 220))
+        click_button = Button(250, 330, 200, 60, "нажми", "bg_btt.png", WHITE)
+        click_button.draw(window)
 # створюємо кнопку з фоном-картинкою
 start_button = Button(250, 330, 200, 60, "Test_Button", "bg_btt.png", WHITE)
+game = Game()
 
 # керування сценами
 scene = "menu"
@@ -52,15 +60,16 @@ while run:
     if scene == "menu":
         window.blit(menu_background, (0, 0))
         start_button.draw(window)
-         x,y = mouse.get_pos()
-        if start_button.rect.collidepoint(x,y):
-            start_button.image = pygame.transform.scale(pygame.image.load(), (w, h))
+        x, y = pygame.mouse.get_pos()
+        if start_button.rect.collidepoint(x, y):
+            start_button.image = pygame.transform.scale(pygame.image.load("text.png"), (start_button.rect.width, start_button.rect.height))
         else:
-            start_button.image = pygame.transform.scale(pygame.image.load(), (w, h))
+            start_button.image = pygame.transform.scale(pygame.image.load("bg_btt.png"),
+                                                        (start_button.rect.width, start_button.rect.height))
     elif scene == "game":
-        window.blit(game_background, (0, 0))
-        text = font1.render("Тут буде гра!", True, WHITE)
-        window.blit(text, (250, 220))
+        game.start()
+
+
 
     pygame.display.update()
     pygame.time.delay(50)
