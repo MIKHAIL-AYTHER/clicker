@@ -33,18 +33,20 @@ def load_image(path, width=None, height=None):
 
 
 # Предзагрузка изображений для фонов и кнопок
-menu_background = load_image("menu_fone.jpg", WIN_WIDTH, WIN_HEIGHT)
-game_background = pygame.Surface((WIN_WIDTH, WIN_HEIGHT))
-game_background.fill((100, 200, 100))  # Зеленый фон для игры
+menu_background = load_image("images/bg/menu_fone.jpg", WIN_WIDTH, WIN_HEIGHT)
+game_background = load_image("images/bg/game_1.png", WIN_WIDTH, WIN_HEIGHT)
+
 
 # Пути к изображениям кнопок
-default_button_image_path = "bg_btt.png"
-hover_button_image_path = "text.png"
-
+default_button_image_path = "images/button/bg_btt.png"
+hover_button_image_path = "images/button/text.png"
+default_hamster_path = "images/hamsters/default/1.png"
+hover_hamster_path = "images/hamsters/hovered/1.png"
 # Загружаем изображения кнопок один раз
 default_button_image = load_image(default_button_image_path, 200, 60)
 hover_button_image = load_image(hover_button_image_path, 200, 60)
-
+default_hamster = load_image(default_hamster_path, 200, 400)
+hover_hamster = load_image(hover_hamster_path, 200, 400)
 # Шрифт
 font1 = pygame.font.SysFont("Arial", 30)
 
@@ -80,12 +82,12 @@ class Button:
 
 class Game:
     def __init__(self):
-        button_width, button_height = 200, 60
+        button_width, button_height = 300, 450
         # Центрируем кнопку на экране
         button_x = (WIN_WIDTH - button_width) // 2
         button_y = (WIN_HEIGHT - button_height) // 2
         self.game_button = Button(button_x, button_y, button_width, button_height, "нажми",
-                                  default_button_image, hover_button_image, WHITE)
+                                  default_hamster, hover_hamster, WHITE)
         self.click_count = 0
 
     def start(self, surface):
