@@ -4,8 +4,8 @@ import sys
 pygame.init()
 
 # Константи
-WIN_WIDTH = 700
-WIN_HEIGHT = 500
+WIN_WIDTH = 1200
+WIN_HEIGHT = 800
 FPS = 60
 
 # Кольори
@@ -90,9 +90,9 @@ class AutoClicker:
         self.last_time = pygame.time.get_ticks()
 
         # Базові вартості покращень
-        self.speed_cost = 50
-        self.quantity_cost = 50
-        self.clicks_cost = 50
+        self.speed_cost = 20
+        self.quantity_cost = 40
+        self.clicks_cost = 25
 
     def get_interval(self):
         """
@@ -143,6 +143,7 @@ class Game:
         button_width, button_height = 300, 450
         button_x = (WIN_WIDTH - button_width) // 2
         button_y = (WIN_HEIGHT - button_height) // 2
+        self.back_to_menu_button = Button(WIN_WIDTH -170, WIN_HEIGHT -170, 150, 50, "← Назад", default_button_image, hover_button_image, WHITE)
         self.game_button = Button(button_x, button_y, button_width, button_height, "Нажми!",
                                   default_hamster, hover_hamster, WHITE)
         # Кнопка прокачування для ручного кліка
@@ -177,12 +178,32 @@ class Game:
                                                  default_button_image, hover_button_image, WHITE)
 
     def check_level_up(self):
-        while self.click_count >= 10 * (2.2 ** (self.level - 1)):
-            required_clicks = 10 * (2.2 ** (self.level - 1))
+        while self.click_count >= 10 * (3 ** (self.level - 1)):
+            required_clicks = 10 * (3 ** (self.level - 1))
             self.level += 1
-            bonus = max(self.level * 5, 10)
+            bonus = max(self.level * 5, 20)
             self.currency += bonus
             print(f"Новий рівень: {self.level}. Отримано бонусні монети: {bonus} (потрібно {required_clicks} кліков)")
+            if self.level in [3, 5, 7, 9]:
+                if self.level == 3:
+                    default_hamster_path = "images/hamsters/default/2.png"
+                    hover_hamster_path = "images/hamsters/hovered/2.png"
+                elif self.level == 5:
+                    default_hamster_path = "images/hamsters/default/3.png"
+                    hover_hamster_path = "images/hamsters/hovered/3.png"
+                elif self.level == 7:
+                    default_hamster_path = "images/hamsters/default/4.png"
+                    hover_hamster_path = "images/hamsters/hovered/4.png"
+                elif self.level == 9:
+                    default_hamster_path = "images/hamsters/default/5.png"
+                    hover_hamster_path = "images/hamsters/hovered/5.png"
+
+                default_hamster = load_image(default_hamster_path, 200, 400)
+                hover_hamster = load_image(hover_hamster_path, 200, 400)
+
+                self.game_button = Button(self.game_button.rect.x, self.game_button.rect.y,
+                                          self.game_button.rect.width, self.game_button.rect.height, "Нажми!",
+                                          default_hamster, hover_hamster, WHITE)
 
     def upgrade(self):
         """
@@ -216,10 +237,10 @@ class Game:
         """
         surface.blit(game_background, (0, 0))
         # Статистика
-        level_text = font1.render(f"Уровень: {self.level}", True, WHITE)
-        clicks_text = font1.render(f"Клики: {self.click_count}", True, WHITE)
-        currency_text = font1.render(f"Валюта: {self.currency}", True, WHITE)
-        multiplier_text = font1.render(f"Множитель: {self.click_multiplier}", True, WHITE)
+        level_text = font1.render(f"Рівень: {self.level}", True, WHITE)
+        clicks_text = font1.render(f"Тицьків: {self.click_count}", True, WHITE)
+        currency_text = font1.render(f"Хомакоінс: {self.currency}", True, WHITE)
+        multiplier_text = font1.render(f"Примноження: {self.click_multiplier}", True, WHITE)
         surface.blit(level_text, (20, 20))
         surface.blit(clicks_text, (20, 60))
         surface.blit(currency_text, (20, 100))
@@ -227,17 +248,18 @@ class Game:
 
         # Ручний клік та прокачування
         self.game_button.draw(surface)
-        self.upgrade_button.text = f"Прокачка ({self.upgrade_cost})"
+        self.back_to_menu_button.draw(surface)
+        self.upgrade_button.text = f"Покращення ({self.upgrade_cost})"
         self.upgrade_button.draw(surface)
 
         # Відображення інтерфейсу автоклікера
         if not self.auto_clicker_enabled:
-            self.auto_clicker_purchase_button.text = f"Купить авто ({self.auto_clicker_purchase_cost})"
+            self.auto_clicker_purchase_button.text = f"Авто клікер ({self.auto_clicker_purchase_cost})"
             self.auto_clicker_purchase_button.draw(surface)
         else:
-            self.auto_clicker_speed_button.text = f"Скорость ({self.auto_clicker.speed_cost})"
-            self.auto_clicker_quantity_button.text = f"Количество ({self.auto_clicker.quantity_cost})"
-            self.auto_clicker_clicks_button.text = f"Клики ({self.auto_clicker.clicks_cost})"
+            self.auto_clicker_speed_button.text = f"Швидкість ({self.auto_clicker.speed_cost})"
+            self.auto_clicker_quantity_button.text = f"Кількість ({self.auto_clicker.quantity_cost})"
+            self.auto_clicker_clicks_button.text = f"Тицьків ({self.auto_clicker.clicks_cost})"
             self.auto_clicker_speed_button.draw(surface)
             self.auto_clicker_quantity_button.draw(surface)
             self.auto_clicker_clicks_button.draw(surface)
@@ -248,7 +270,7 @@ def main():
     scene = "menu"
 
     # Кнопка переходу з меню на гру
-    start_button = Button(250, 330, 200, 60, "Test_Button",
+    start_button = Button((WIN_WIDTH -200) // 2,(WIN_HEIGHT -60) // 2, 200, 60, "Грати",
                           default_button_image, hover_button_image, WHITE)
     game = Game()
 
@@ -275,6 +297,9 @@ def main():
                     # Прокачування ручного кліку
                     elif game.upgrade_button.is_clicked(pos):
                         game.upgrade()
+                    elif game.back_to_menu_button.is_clicked(pos):
+                        print("Повернення в меню!")
+                        scene = "menu"
                     # Інтерфейс автоклікера:
                     if not game.auto_clicker_enabled:
                         if game.auto_clicker_purchase_button.is_clicked(pos):
@@ -301,6 +326,7 @@ def main():
             game.auto_clicker_tick()  # Перевірка автоклікера на кожну ітерацію
             game.start(window)
             game.game_button.update_hover(mouse_pos)
+            game.back_to_menu_button.update_hover(mouse_pos)
             game.upgrade_button.update_hover(mouse_pos)
             if not game.auto_clicker_enabled:
                 game.auto_clicker_purchase_button.update_hover(mouse_pos)
